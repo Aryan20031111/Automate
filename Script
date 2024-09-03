@@ -1,0 +1,199 @@
+#!/bin/bash
+
+echo "--------------------------"
+echo "Enter the DOMAIN or TARGET"
+read tar
+
+echo "----------------------------------------------------"
+echo "YOU want to save result in a directory: y(YES) n(no)"
+read cho
+
+echo "----------------------------------------------------"
+if [ $cho = "y" ]
+then
+
+echo "Enter the directory name where you want to save the data"
+read directory
+mkdir $directory
+
+echo "----------------<Ping started>-----------------"
+#Ping is a simple computer network software utility used to test and verify the reachability of a host on an Internet Protocol (IP) network
+ping -c 4 $tar >> $directory/ping.txt
+cat $directory/ping.txt
+echo "----------------<Ping completed>---------------"
+
+echo "................................................"
+
+echo "----------------<whois started>-----------------"
+#The Whois provides the ownership record for a domain name or IP address with basic registration details
+whois $tar >> $directory/whois.txt
+cat $directory/whois.txt
+echo "----------------<whois completed>---------------"
+
+echo "................................................"
+
+echo "--------------<tcptraceroute started>-----------"
+# traces the route of IP packets to a user-specified destination system. The route can involve many different systems along the way. Each system along the route is referred to as a hop
+sudo tcptraceroute $tar >> $directory/tcptraceroute.txt
+cat $directory/tcptraceroute.txt
+echo "------------<tcptraceroute completed>-----------"
+
+echo"................................................."
+
+echo "-------------< dnsrecon started >---------------"
+#Check all NS Records for Zone Transfers. · Enumerate General DNS Records for a given Domain (MX, SOA, NS, A, AAAA, SPF and TXT)
+sudo dnsrecon -d $tar -t std >> $directory/dnsrecon.txt
+cat $directory/dnsrecon.txt
+echo "-------------<dnsrecon completed>-------------"
+
+echo "................................................"
+
+echo "-------------<wafw00f started>>-----------------"
+#Web Application Firewall Detection Tool
+wafw00f $tar >> $directory/wafw00f.txt
+cat $directory/wafw00f.txt
+echo "-------------<wafw00f completed>>-----------------"
+
+echo "................................................"
+
+echo "-----------------<nmap started>-------------------"
+#An open source Linux command-line tool—used for network exploration, host discovery, and security auditing
+sudo nmap -Pn -p0-1000 $tar >> $directory/nmap.txt
+cat $directory/nmap.txt
+echo "----------------<nmap completed>---------------"
+
+echo "................................................"
+
+echo "-----------<assetfinder started >-----------------"
+#Find domains and subdomains related to a given domain
+assetfinder $tar >> $directory/assetfinder.txt
+cat $directory/assetfinder.txt
+echo "-----------<assetfinder completed >---------------"
+
+echo ".................................................."
+
+echo "--------------<httprobe started>------------------"
+#It is a tool for quickly probing for active http and https servers.
+cat assest.txt | httprobe >> $directory/httprobe.txt
+cat $directory/httprobe.txt
+echo "-------------<httprobe completed>-----------------"
+
+echo ".................................................."
+
+echo "----------------<dirb starting>-------------------"
+#       dirb - Web Content Scanner
+dirb http://$tar >> $directory/dirb.txt
+cat $directory/dirb.txt
+echo "----------------<dirb completed>------------------"
+
+echo ".................................................."
+
+echo "--------------<gobuster started>------------------"
+#It is a tools for enumeration hidden directories and files, rute forcing web directories.
+sudo gobuster dir -u https://$tar -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt >> $directory/gobuster.txt
+cat $directory/gobuster.txt
+echo "------------<gobuster completed>------------------"
+
+echo ".................................................."
+
+echo "-------------<dirsearch started>------------------"
+#It is a command line tool designed to brute force hidden directories and files in websites.
+sudo dirsearch -u http://$tar >>$directory/dirsearch.txt
+cat $directory/dirsearch.txt
+echo "--------------<dirsearch completed>---------------"
+
+echo ".................................................."
+
+echo ".................................................."
+echo "~~~~~~~~~~Thank you for using this tool~~~~~~~~~~~"
+echo ".................................................."
+
+elif [ $cho = "n" ]
+then
+echo "----------------<Ping started>-----------------"
+#Ping is a simple computer network software utility used to test and verify the reachability of a host on an Internet Protocol (IP) network
+ping -c 4 $tar
+echo "----------------<Ping completed>---------------"
+
+echo "................................................"
+
+echo "----------------<whois started>-----------------"
+#The Whois provides the ownership record for a domain name or IP address with basic registration details
+whois $tar
+echo "----------------<whois completed>---------------"
+
+echo "................................................"
+
+echo "--------------<tcptraceroute started>-----------"
+# traces the route of IP packets to a user-specified destination system. The route can involve many different systems along the way. Each system along the route is referred to as a hop
+sudo tcptraceroute $tar
+echo "------------<tcptraceroute completed>-----------"
+
+echo "................................................."
+
+echo "-------------< dnsrecon started >---------------"
+#Check all NS Records for Zone Transfers. · Enumerate General DNS Records for a given Domain (MX, SOA, NS, A, AAAA, SPF and TXT)
+sudo dnsrecon -d $tar -t std
+echo "-------------< dnsrecon completed >-------------"
+
+echo ".................................................."
+
+echo "-------------<wafw00f started>>-------------------"
+#Web Application Firewall Detection Tool
+wafw00f $tar
+echo "-------------<wafw00f completed>>-----------------"
+
+echo ".................................................."
+
+echo "-----------------<nmap started>-------------------"
+#An open source Linux command-line tool—used for network exploration, host discovery, and security auditing
+sudo nmap -Pn -p0-1000 $tar
+echo "----------------<nmap completed>------------------"
+
+echo ".................................................."
+
+echo "-----------<assetfinder started >-----------------"
+#Find domains and subdomains related to a given domain
+assetfinder $tar >> assest.txt
+echo "-----------<assetfinder completed >---------------"
+
+echo ".................................................."
+
+echo "--------------<httprobe started>------------------"
+#It is a tool for quickly probing for active http and https servers.
+cat assest.txt | httprobe
+echo "-------------<httprobe completed>-----------------"
+
+echo ".................................................."
+
+echo "----------------<dirb starting>-------------------"
+#dirb - Web Content Scanner
+dirb http://$tar
+echo "----------------<dirb completed>------------------"
+
+echo ".................................................."
+
+echo "--------------<gobuster started>------------------"
+#It is a tools for enumeration hidden directories and files, rute forcing web directories.
+sudo gobuster dir -u https://$tar -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt
+echo "------------<gobuster completed>------------------"
+
+echo ".................................................."
+
+echo "-------------<dirsearch started>------------------"
+#It is a command line tool designed to brute force hidden directories and files in websites.
+sudo dirsearch -u http://$tar
+echo "--------------<dirsearch completed>---------------"
+
+echo ".................................................."
+
+echo ".................................................."
+echo "~~~~~~~~~~Thank you for using this tool~~~~~~~~~~~"
+echo ".................................................."
+
+else
+echo "****************************************************"
+echo "You give wrong syntax so plese re configure the tool"
+echo "****************************************************"
+
+fi
